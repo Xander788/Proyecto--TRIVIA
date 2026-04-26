@@ -1,7 +1,7 @@
 const Card = ({ children, className = "", ...props }) => {
   return (
     <div 
-      className={`card shadow-sm ${className}`} 
+      className={`card glass-card ${className}`} 
       {...props}
     >
       {children}
