@@ -11,7 +11,7 @@ const Navbar = () => {
           href="#"
           onClick={(e) => { e.preventDefault(); navigate('/') }}
         >
-          🧠 Trivia en Español
+          🧠 Trivia 
         </a>
 
         <button 
