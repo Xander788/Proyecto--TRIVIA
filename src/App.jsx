@@ -1,23 +1,22 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Navbar from './Components/Navbar'
-import Home from './pages/Home'
-import Selection from './pages/Selection'
-import Game from './pages/Game'
-import Results from './pages/Results'
+import Home from './Pages/Home'
+import Selection from './Pages/Selection'
+import GameTrivia from './Pages/GameTrivia'
+import GamePokemon from './Pages/GamePokemon'
+import Results from './Pages/Results'
 
 function App() {
   return (
     <Router>
       <Navbar />
-      
-      <div className="container py-4">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/selection" element={<Selection />} />
-          <Route path="/game" element={<Game />} />
-          <Route path="/results" element={<Results />} />
-        </Routes>
-      </div>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/selection" element={<Selection />} />
+        <Route path="/game-trivia" element={<GameTrivia />} />
+        <Route path="/gamepokemon" element={<GamePokemon />} />
+        <Route path="/results" element={<Results />} />
+      </Routes>
     </Router>
   )
 }

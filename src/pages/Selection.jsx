@@ -6,15 +6,19 @@ import Button from '../Components/Button'
 const Selection = () => {
   const [category, setCategory] = useState(9)
   const [difficulty, setDifficulty] = useState('easy')
-  const [gameMode, setGameMode] = useState('trivia') 
+  const [gameMode, setGameMode] = useState('trivia')
   const navigate = useNavigate()
 
   const startGame = () => {
-    navigate('/game', { state: { category, difficulty, gameMode } })
+    if (gameMode === 'trivia') {
+      navigate('/game-trivia', { state: { category, difficulty } })
+    } else {
+      navigate('/game-pokemon', { state: { difficulty } })
+    }
   }
 
   const categories = [
-    { value: 9,  label: 'Conocimiento General' },
+    { value: 9, label: 'Conocimiento General' },
     { value: 11, label: 'Películas' },
     { value: 17, label: 'Ciencia y Naturaleza' },
     { value: 22, label: 'Geografía' },
@@ -45,9 +49,9 @@ const Selection = () => {
               <label className="form-label fw-bold text-white">Dificultad</label>
               <div className="btn-group w-100">
                 {[
-                  { value: 'easy',   label: 'Fácil',   variant: 'success' },
-                  { value: 'medium', label: 'Medio',   variant: 'warning' },
-                  { value: 'hard',   label: 'Difícil', variant: 'primary' }
+                  { value: 'easy', label: 'Fácil', variant: 'success' },
+                  { value: 'medium', label: 'Medio', variant: 'warning' },
+                  { value: 'hard', label: 'Difícil', variant: 'primary' }
                 ].map(({ value, label, variant }) => (
                   <Button
                     key={value}
