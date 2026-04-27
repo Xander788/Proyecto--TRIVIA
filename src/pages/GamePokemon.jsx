@@ -5,6 +5,8 @@ import Timer from '../Components/Timer'
 import Button from '../Components/Button'
 import Confetti from '../Components/Confetti'
 
+const TIEMPO = { easy: 30, medium: 20, hard: 12 }
+
 const GamePokemon = () => {
   const location = useLocation()
   const navigate = useNavigate()
@@ -77,8 +79,7 @@ const GamePokemon = () => {
   }
 
   useEffect(() => {
-    const initialTime = difficulty === 'easy' ? 25 : difficulty === 'medium' ? 20 : 15
-    setTimeLeft(initialTime)
+    setTimeLeft(TIEMPO[difficulty])
     fetchPokemon()
   }, [])
 
@@ -110,7 +111,7 @@ const GamePokemon = () => {
         setSelectedAnswer(null)
         setPokemonOptions([])
         setPokemonData(null)
-        setTimeLeft(difficulty === 'hard' ? 12 : 15)
+        setTimeLeft(TIEMPO[difficulty])
         fetchPokemon()
       }, 1800)
     }
@@ -143,33 +144,69 @@ const GamePokemon = () => {
       }
 
       setPokemonRound(nextRound)
-      const newTime = difficulty === 'easy' ? 25 : difficulty === 'medium' ? 20 : 15
-      setTimeLeft(newTime)
+      setTimeLeft(TIEMPO[difficulty])
       fetchPokemon()
     }, 1800)
   }
 
-  return (
-    <div className="container py-5">
-      <Card className="p-4 mx-auto" style={{ maxWidth: '760px' }}>
-        <div className="d-flex justify-content-between align-items-center mb-4">
-          <h5 className="mb-0 text-white">¿Quién es ese Pokémon? ({pokemonRound}/10)</h5>
-          <div className="badge bg-primary fs-5 px-3 py-2">Puntuación: {score}</div>
-          <Timer timeLeft={timeLeft} />
-        </div>
+  if (loading) {
+    return (
+      <div className="container py-5 text-center">
+        <Card className="p-5">
+          <div className="spinner-border text-success mb-4" role="status" />
+          <h4 className="text-white mb-2">Cargando Pokémon...</h4>
+          <p className="text-white opacity-75">Conectando con la API de Pokémon</p>
+        </Card>
+      </div>
+    )
+  }
 
+  return (
+    <div className="container py-2">
+      <Confetti active={showConfetti} />
+
+      <div className="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+        <span className="text-white fw-bold fs-5">
+          Ronda {pokemonRound} / 10
+        </span>
+        <Timer timeLeft={timeLeft} />
+        <span className="badge bg-success fs-6 px-3 py-2">
+          ✅ {score} correctas
+        </span>
+      </div>
+
+      <div className="progress mb-2" style={{ height: '8px' }}>
+        <div
+          className="progress-bar bg-success"
+          style={{ width: `${(pokemonRound / 10) * 100}%` }}
+        />
+      </div>
+
+      <Card className="p-3 p-md-3">
         {pokemonData && pokemonOptions.length > 0 ? (
-          <div className="text-center">
-            <h4 className="mb-4 text-white">¿Quién es este Pokémon?</h4>
-            <div className="mb-4">
-              <img src={pokemonData.sprite} alt="Pokémon" style={{ maxHeight: '260px', imageRendering: 'pixelated' }} />
+          <div>
+            <h4 className="text-center mb-2 text-white">¿Quién es este Pokémon?</h4>
+            <div className="text-center mb-2">
+              <img 
+                src={pokemonData.sprite} 
+                alt="Pokémon" 
+                style={{ maxHeight: '180px', imageRendering: 'pixelated' }} 
+              />
             </div>
-            <div className="d-grid gap-3">
+            <div className="d-grid gap-2">
               {pokemonOptions.map((option, i) => (
                 <Button
                   key={i}
-                  variant={selectedAnswer ? (option === pokemonData.name ? "success" : option === selectedAnswer ? "danger" : "outline-light") : "outline-light"}
-                  className="py-3 fs-5"
+                  variant={
+                    selectedAnswer 
+                      ? option === pokemonData.name 
+                        ? "success" 
+                        : option === selectedAnswer 
+                        ? "danger" 
+                        : "outline-light"
+                      : "outline-light"
+                  }
+                  className="py-2"
                   onClick={() => handleAnswer(option)}
                   disabled={!!selectedAnswer}
                 >
@@ -180,19 +217,23 @@ const GamePokemon = () => {
           </div>
         ) : (
           <div className="text-center py-5">
-            <div className="spinner-border text-primary mb-3" style={{ width: '3rem', height: '3rem' }} />
+            <div className="spinner-border text-success mb-3" role="status" />
             <p className="text-white fs-5">Cargando siguiente Pokémon...</p>
           </div>
         )}
 
         {showFeedback && (
-          <div className={`text-center mt-4 fs-4 fw-bold ${isCorrect ? 'text-success' : 'text-primary'}`}>
-            {isCorrect ? '¡Correcto! 🎉' : '¡Incorrecto!'}
+          <div className="mt-2 text-center">
+            {isCorrect ? (
+              <p className="text-success fw-bold fs-5">🎉 ¡Correcto!</p>
+            ) : (
+              <p className="text-danger fw-bold fs-5">
+                ❌ Incorrecto — era: <strong>{pokemonData?.name}</strong>
+              </p>
+            )}
           </div>
         )}
       </Card>
-
-      <Confetti active={showConfetti} />
     </div>
   )
 }
