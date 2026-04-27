@@ -1,0 +1,128 @@
+// src/services/accountService.js
+import jorge from '../Login/Avatars/Jorge.jpg';
+import alexander from '../Login/Avatars/Alexander.jpg';
+import andres from '../Login/Avatars/Andres.jpg';
+import juanpablo from '../Login/Avatars/JuanPablo.jpg';
+import victor from '../Login/Avatars/Victor.jpg';
+
+const PREDEFINED_USERS = [
+  {
+    id: 1,
+    username: "victor.lopez",
+    email: "victor.lopez@trivia.com",
+    password: "123456",
+    picture: victor,
+    provider: "facebook",
+    correctAnswers: 0,
+    incorrectAnswers: 0
+  },
+  {
+    id: 2,
+    username: "alexander.ramirez",
+    email: "alexander.ramirez@trivia.com",
+    password: "123456",
+    picture: alexander,
+    provider: "facebook",
+    correctAnswers: 0,
+    incorrectAnswers: 0
+  },
+  {
+    id: 3,
+    username: "juanpablo.rodriguez",
+    email: "juanpablo.rodriguez@trivia.com",
+    password: "123456",
+    picture: juanpablo,
+    provider: "facebook",
+    correctAnswers: 0,
+    incorrectAnswers: 0
+  },
+  {
+    id: 4,
+    username: "jorge.rojas",
+    email: "jorge.rojas@trivia.com",
+    password: "123456",
+    picture: jorge,
+    provider: "facebook",
+    correctAnswers: 0,
+    incorrectAnswers: 0
+  },
+  {
+    id: 5,
+    username: "andres.bolandi",
+    email: "andres.bolandi@trivia.com",
+    password: "123456",
+    picture: andres,
+    provider: "facebook",
+    correctAnswers: 0,
+    incorrectAnswers: 0
+  }
+];
+
+// Obtener todos los usuarios (predefinidos + creados por el usuario)
+export const getAllUsers = () => {
+  try {
+    const saved = JSON.parse(localStorage.getItem('triviaUsers') || '[]');
+    // Evitar duplicados con los predefinidos
+    const allUsers = [...PREDEFINED_USERS];
+    
+    saved.forEach(savedUser => {
+      if (!allUsers.some(u => u.email === savedUser.email)) {
+        allUsers.push(savedUser);
+      }
+    });
+    
+    return allUsers;
+  } catch (error) {
+    return [...PREDEFINED_USERS];
+  }
+};
+
+// Guardar nuevo usuario (cuentas locales)
+export const saveUser = (userData) => {
+  try {
+    const allUsers = getAllUsers();
+    
+    // Verificar duplicados
+    if (allUsers.some(u => 
+      u.username.toLowerCase() === userData.username.toLowerCase() || 
+      u.email.toLowerCase() === userData.email.toLowerCase()
+    )) {
+      return false;
+    }
+
+    const usersToSave = [...JSON.parse(localStorage.getItem('triviaUsers') || '[]'), userData];
+    localStorage.setItem('triviaUsers', JSON.stringify(usersToSave));
+    
+    // Establecer como usuario actual
+    localStorage.setItem('currentUser', JSON.stringify(userData));
+    return true;
+  } catch (error) {
+    console.error("Error guardando usuario:", error);
+    return false;
+  }
+};
+
+// Obtener usuario actual
+export const getCurrentUser = () => {
+  try {
+    const user = localStorage.getItem('currentUser');
+    return user ? JSON.parse(user) : null;
+  } catch {
+    return null;
+  }
+};
+
+// Cerrar sesión
+export const logoutUser = () => {
+  localStorage.removeItem('currentUser');
+};
+
+// Verificar login (usuario o email + contraseña)
+export const verifyLogin = (identifier, password) => {
+  const users = getAllUsers();
+  return users.find(u => 
+    (u.username.toLowerCase() === identifier.toLowerCase() || 
+     u.email.toLowerCase() === identifier.toLowerCase()) && 
+    u.password === password
+  );
+};
