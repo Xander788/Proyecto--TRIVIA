@@ -2,9 +2,10 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Card from '../Components/Card'
 import Button from '../Components/Button'
+import CustomSelect from '../Components/Select' 
 
 const Selection = () => {
-  const [category, setCategory] = useState(9)
+  const [category, setCategory] = useState('general_knowledge')
   const [difficulty, setDifficulty] = useState('easy')
   const [gameMode, setGameMode] = useState('trivia')
   const navigate = useNavigate()
@@ -18,11 +19,11 @@ const Selection = () => {
   }
 
   const categories = [
-    { value: 9, label: 'Conocimiento General' },
-    { value: 11, label: 'Películas' },
-    { value: 17, label: 'Ciencia y Naturaleza' },
-    { value: 22, label: 'Geografía' },
-    { value: 23, label: 'Historia' },
+    { value: 'general_knowledge', label: 'Conocimiento General' },
+    { value: 'film_and_tv',       label: 'Películas y TV' },
+    { value: 'science',           label: 'Ciencia y Naturaleza' },
+    { value: 'geography',         label: 'Geografía' },
+    { value: 'history',           label: 'Historia' },
   ]
 
   return (
@@ -30,33 +31,27 @@ const Selection = () => {
       <div className="row justify-content-center">
         <div className="col-lg-6 col-md-8">
           <Card className="p-5">
-            <h2 className="text-center mb-5 text-white">Configura tu partida</h2>
+            <h2 className="text-center mb-5 text-white">⚙️ Configura tu partida</h2>
 
-            <div className="mb-4">
-              <label className="form-label fw-bold text-white">Categoría</label>
-              <select
-                className="form-select form-select-lg"
-                value={category}
-                onChange={(e) => setCategory(Number(e.target.value))}
-              >
-                {categories.map(cat => (
-                  <option key={cat.value} value={cat.value}>{cat.label}</option>
-                ))}
-              </select>
-            </div>
+            <CustomSelect
+              label="Categoría"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              options={categories}
+            />
 
             <div className="mb-4">
               <label className="form-label fw-bold text-white">Dificultad</label>
               <div className="btn-group w-100">
                 {[
-                  { value: 'easy', label: 'Fácil', variant: 'success' },
-                  { value: 'medium', label: 'Medio', variant: 'warning' },
-                  { value: 'hard', label: 'Difícil', variant: 'primary' }
+                  { value: 'easy',   label: '🟢 Fácil',  variant: 'success' },
+                  { value: 'medium', label: '🟡 Medio',  variant: 'warning' },
+                  { value: 'hard',   label: '🔴 Difícil', variant: 'primary' }
                 ].map(({ value, label, variant }) => (
                   <Button
                     key={value}
                     variant={difficulty === value ? variant : `outline-${variant}`}
-                    className={`flex-grow-1 ${difficulty === value ? 'fw-bold shadow-sm' : ''}`}
+                    className={`flex-grow-1 ${difficulty === value ? 'fw-bold' : ''}`}
                     onClick={() => setDifficulty(value)}
                   >
                     {label}
@@ -73,22 +68,22 @@ const Selection = () => {
                   className="flex-grow-1"
                   onClick={() => setGameMode('trivia')}
                 >
-                  Trivia Normal
+                  🧠 Trivia Normal
                 </Button>
                 <Button
                   variant={gameMode === 'pokemon' ? 'danger' : 'outline-danger'}
                   className="flex-grow-1"
                   onClick={() => setGameMode('pokemon')}
                 >
-                  ¿Quién es ese Pokémon?
+                  🎮 ¿Quién es ese Pokémon?
                 </Button>
               </div>
             </div>
 
-            <Button 
-              variant="success" 
-              size="lg" 
-              className="w-100 py-3 fs-5 fw-bold"
+            <Button
+              variant="success"
+              size="lg"
+              className="w-100 py-3 fs-5 fw-bold btn-neon"
               onClick={startGame}
             >
               ¡EMPEZAR {gameMode === 'pokemon' ? 'POKÉMON' : 'TRIVIA'}!

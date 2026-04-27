@@ -1,42 +1,9 @@
-import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import UserProfile from './UserProfile'
-import LoginModal from './LoginModal'
-import Button from './Button'
-import { getCurrentAccount, setCurrentAccount } from '../services/accountService'
 
 const Navbar = () => {
   const navigate = useNavigate()
-  const [user, setUser] = useState(null)
-  const [showLoginModal, setShowLoginModal] = useState(false)
 
-  useEffect(() => {
-    const currentUser = getCurrentAccount()
-    if (currentUser) {
-      setUser(currentUser)
-    }
-
-    // Escuchar cambios en localStorage desde otras pestañas/componentes
-    const handleStorageChange = () => {
-      const updated = getCurrentAccount()
-      setUser(updated)
-    }
-
-    window.addEventListener('storage', handleStorageChange)
-    return () => window.removeEventListener('storage', handleStorageChange)
-  }, [])
-
-  const handleLogout = () => {
-    setUser(null)
-    navigate('/')
-  }
-
-  const handleLoginSuccess = (userData) => {
-    setUser(userData)
-    setShowLoginModal(false)
-  }
-
-return (
+  return (
     <nav className="navbar navbar-expand-lg navbar-dark shadow">
       <div className="container">
         <a 

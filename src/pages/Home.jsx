@@ -30,7 +30,7 @@ const Home = () => {
             </div>
 
             <p className="text-white fs-5 fw-bold">
-              10 preguntas • Diferentes categorías • Versus
+              • 10 preguntas • Poketrivia  • Versus • Diferentes categorías
             </p>
           </Card>
         </div>

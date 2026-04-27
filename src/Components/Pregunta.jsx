@@ -21,11 +21,11 @@ const Pregunta = ({
 
           if (respuestaSeleccionada) {
             if (respuesta === respuestaCorrecta) {
-              variant = "success";           // verde correcto
+              variant = "success";
               extraClass = "py-3 text-start fw-bold text-white";
             } 
             else if (respuesta === respuestaSeleccionada) {
-              variant = "primary";           // ← CAMBIO: ahora es primary (azul) en vez de danger
+              variant = "primary";
               extraClass = "py-3 text-start fw-bold text-white";
             }
           }
