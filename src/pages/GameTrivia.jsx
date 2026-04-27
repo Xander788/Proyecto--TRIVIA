@@ -6,68 +6,6 @@ import Timer from '../Components/Timer'
 import Pregunta from '../Components/Pregunta'
 import Confetti from '../Components/Confetti'
 
-const BANCO_LOCAL = [
-  {
-    pregunta: '¿Cuál es el planeta más grande del sistema solar?',
-    correcta: 'Júpiter',
-    incorrectas: ['Saturno', 'Neptuno', 'Marte'],
-  },
-  {
-    pregunta: '¿En qué año llegó el hombre a la Luna?',
-    correcta: '1969',
-    incorrectas: ['1972', '1965', '1975'],
-  },
-  {
-    pregunta: '¿Cuál es el símbolo químico del Oro?',
-    correcta: 'Au',
-    incorrectas: ['Go', 'Or', 'Ag'],
-  },
-  {
-    pregunta: '¿Cuántos continentes tiene la Tierra?',
-    correcta: '7',
-    incorrectas: ['5', '6', '8'],
-  },
-  {
-    pregunta: '¿Cuál es el océano más grande del mundo?',
-    correcta: 'Pacífico',
-    incorrectas: ['Atlántico', 'Índico', 'Ártico'],
-  },
-  {
-    pregunta: '¿Quién pintó la Mona Lisa?',
-    correcta: 'Leonardo da Vinci',
-    incorrectas: ['Miguel Ángel', 'Rafael', 'Picasso'],
-  },
-  {
-    pregunta: '¿Cuál es el país más grande del mundo?',
-    correcta: 'Rusia',
-    incorrectas: ['China', 'Canadá', 'Estados Unidos'],
-  },
-  {
-    pregunta: '¿Cuántos lados tiene un hexágono?',
-    correcta: '6',
-    incorrectas: ['5', '7', '8'],
-  },
-  {
-    pregunta: '¿Cuál es el animal terrestre más rápido?',
-    correcta: 'Guepardo',
-    incorrectas: ['León', 'Caballo', 'Springbok'],
-  },
-  {
-    pregunta: '¿En qué país se originó el fútbol moderno?',
-    correcta: 'Inglaterra',
-    incorrectas: ['Brasil', 'España', 'Francia'],
-  },
-  {
-    pregunta: '¿Cuál es la capital de Australia?',
-    correcta: 'Canberra',
-    incorrectas: ['Sídney', 'Melbourne', 'Brisbane'],
-  },
-  {
-    pregunta: '¿Cuántos huesos tiene el cuerpo humano adulto?',
-    correcta: '206',
-    incorrectas: ['198', '213', '220'],
-  },
-]
 
 const mezclar = (arr) => {
   const copia = [...arr]
@@ -76,6 +14,24 @@ const mezclar = (arr) => {
     ;[copia[i], copia[j]] = [copia[j], copia[i]]
   }
   return copia
+}
+
+const traducir = async (texto) => {
+  try {
+    const respuesta = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(texto)}&langpair=en|es`)
+    
+    if (!respuesta.ok) throw new Error('Error en traducción')
+    const datos = await respuesta.json()
+    
+    if (datos.responseStatus === 200) {
+      return datos.responseData.translatedText
+    } else {
+      throw new Error('Error en traducción')
+    }
+  } catch (err) {
+    console.warn('Error traduciendo:', err)
+    return texto
+  }
 }
 
 const fetchDeAPI = async (category, difficulty) => {
@@ -95,22 +51,26 @@ const fetchDeAPI = async (category, difficulty) => {
   const data = await respuesta.json()
   if (!data || data.length === 0) throw new Error('La API no devolvió preguntas')
  
-  return data.map((item) => ({
-    pregunta: item.question.text,
-    respuestas: mezclar([...item.incorrectAnswers, item.correctAnswer]),
-    correcta: item.correctAnswer,
-  }))
+  const preguntasTraducidas = await Promise.all(
+    data.map(async (item) => {
+      const preguntaTraducida = await traducir(item.question.text)
+      const respuestasTraducidas = await Promise.all([
+        ...item.incorrectAnswers.map(r => traducir(r)),
+        traducir(item.correctAnswer)
+      ])
+      const correctaTraducida = respuestasTraducidas[respuestasTraducidas.length - 1]
+      
+      return {
+        pregunta: preguntaTraducida,
+        respuestas: mezclar(respuestasTraducidas),
+        correcta: correctaTraducida,
+      }
+    })
+  )
+  
+  return preguntasTraducidas
 }
 
-const getPreguntasLocales = () => {
-  return mezclar(BANCO_LOCAL)
-    .slice(0, 10)
-    .map((item) => ({
-      pregunta: item.pregunta,
-      respuestas: mezclar([...item.incorrectas, item.correcta]),
-      correcta: item.correcta,
-    }))
-}
 
 const TIEMPO = { easy: 30, medium: 20, hard: 12 }
 
@@ -126,7 +86,6 @@ const GameTrivia = () => {
   const [score, setScore] = useState(0)
   const [timeLeft, setTimeLeft] = useState(TIEMPO[difficulty])
   const [cargando, setCargando] = useState(true)
-  const [usoFallback, setUsoFallback] = useState(false)
   const [confetti, setConfetti] = useState(false)
  
   const scoreRef = useRef(0)
@@ -137,11 +96,8 @@ const GameTrivia = () => {
       try {
         const data = await fetchDeAPI(category, difficulty)
         setPreguntas(data)
-        setUsoFallback(false)
       } catch (err) {
-        console.warn('API falló, usando banco local:', err.message)
-        setPreguntas(getPreguntasLocales())
-        setUsoFallback(true)
+        console.error('Error al cargar preguntas:', err.message)
       }
       setCargando(false)
     }
@@ -204,7 +160,7 @@ const GameTrivia = () => {
         <Card className="p-5">
           <div className="spinner-border text-success mb-4" role="status" />
           <h4 className="text-white mb-2">Cargando preguntas...</h4>
-          <p className="text-white opacity-75">Conectando con la API de trivia</p>
+          <p className="text-white opacity-75">Conectando con la API de trivia y traduciendo</p>
         </Card>
       </div>
     )
@@ -214,15 +170,10 @@ const GameTrivia = () => {
   if (!preguntaActual) return null
  
   return (
-    <div className="container py-4">
+    <div className="container py-2">
       <Confetti active={confetti} />
-      {usoFallback && (
-        <div className="alert alert-warning text-center mb-3">
-          ⚠️ La API no respondió — usando preguntas locales
-        </div>
-      )}
 
-      <div className="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+      <div className="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
         <span className="text-white fw-bold fs-5">
           Pregunta {indice + 1} / {preguntas.length}
         </span>
@@ -232,14 +183,14 @@ const GameTrivia = () => {
         </span>
       </div>
 
-      <div className="progress mb-4" style={{ height: '8px' }}>
+      <div className="progress mb-2" style={{ height: '8px' }}>
         <div
           className="progress-bar bg-success"
           style={{ width: `${((indice + 1) / preguntas.length) * 100}%` }}
         />
       </div>
 
-      <Card className="p-4 p-md-5">
+      <Card className="p-3 p-md-3">
         <Pregunta
           pregunta={preguntaActual.pregunta}
           respuestas={preguntaActual.respuestas}
@@ -248,7 +199,7 @@ const GameTrivia = () => {
           respuestaCorrecta={preguntaActual.correcta}
         />
         {respuestaElegida && (
-          <div className="mt-4 text-center">
+          <div className="mt-2 text-center">
             {respuestaElegida === preguntaActual.correcta ? (
               <p className="text-success fw-bold fs-5">🎉 ¡Correcto!</p>
             ) : respuestaElegida === '__tiempo_agotado__' ? (
@@ -264,7 +215,7 @@ const GameTrivia = () => {
             <Button
               variant="success"
               size="lg"
-              className="mt-2 px-5 fw-bold btn-neon"
+              className="mt-1 px-5 fw-bold btn-neon"
               onClick={handleSiguiente}
             >
               {indice >= preguntas.length - 1 ? '🏁 Ver Resultados' : 'Siguiente →'}
