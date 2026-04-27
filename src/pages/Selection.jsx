@@ -2,15 +2,15 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Card from '../Components/Card'
 import Button from '../Components/Button'
-import CustomSelect from '../Components/Select'
 
 const Selection = () => {
   const [category, setCategory] = useState(9)
   const [difficulty, setDifficulty] = useState('easy')
+  const [gameMode, setGameMode] = useState('trivia') 
   const navigate = useNavigate()
 
   const startGame = () => {
-    navigate('/game', { state: { category, difficulty } })
+    navigate('/game', { state: { category, difficulty, gameMode } })
   }
 
   const categories = [
@@ -28,13 +28,20 @@ const Selection = () => {
           <Card className="p-5">
             <h2 className="text-center mb-5 text-white">Configura tu partida</h2>
 
-            <CustomSelect
-              value={category}
-              onChange={(e) => setCategory(Number(e.target.value))}
-              options={categories}
-            />
+            <div className="mb-4">
+              <label className="form-label fw-bold text-white">Categoría</label>
+              <select
+                className="form-select form-select-lg"
+                value={category}
+                onChange={(e) => setCategory(Number(e.target.value))}
+              >
+                {categories.map(cat => (
+                  <option key={cat.value} value={cat.value}>{cat.label}</option>
+                ))}
+              </select>
+            </div>
 
-            <div className="mb-5">
+            <div className="mb-4">
               <label className="form-label fw-bold text-white">Dificultad</label>
               <div className="btn-group w-100">
                 {[
@@ -54,13 +61,33 @@ const Selection = () => {
               </div>
             </div>
 
+            <div className="mb-5">
+              <label className="form-label fw-bold text-white">Modo de juego</label>
+              <div className="btn-group w-100">
+                <Button
+                  variant={gameMode === 'trivia' ? 'primary' : 'outline-primary'}
+                  className="flex-grow-1"
+                  onClick={() => setGameMode('trivia')}
+                >
+                  Trivia Normal
+                </Button>
+                <Button
+                  variant={gameMode === 'pokemon' ? 'danger' : 'outline-danger'}
+                  className="flex-grow-1"
+                  onClick={() => setGameMode('pokemon')}
+                >
+                  ¿Quién es ese Pokémon?
+                </Button>
+              </div>
+            </div>
+
             <Button 
               variant="success" 
               size="lg" 
               className="w-100 py-3 fs-5 fw-bold"
               onClick={startGame}
             >
-              ¡EMPEZAR TRIVIA!
+              ¡EMPEZAR {gameMode === 'pokemon' ? 'POKÉMON' : 'TRIVIA'}!
             </Button>
           </Card>
         </div>
