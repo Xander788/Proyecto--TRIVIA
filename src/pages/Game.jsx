@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Card from "../Components/Card";
 import Timer from "../Components/Timer";
 import Pregunta from "../Components/Pregunta";
+import Confetti from "../Components/Confetti";
 
 const Game = () => {
   const location = useLocation();
@@ -16,11 +17,44 @@ const Game = () => {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [timeLeft, setTimeLeft] = useState(25);
   const [loading, setLoading] = useState(true);
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [isCorrect, setIsCorrect] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
 
   const hasFetched = useRef(false);
-  const timerRef = useRef(null); // ← Nuevo: referencia al intervalo
+  const timerRef = useRef(null);
 
-  // ==================== CARGAR PREGUNTAS ====================
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      if (hasFetched.current) return;
+      hasFetched.current = true;
+
+      try {
+        setLoading(true);
+        const res = await fetch(
+          `https://opentdb.com/api.php?amount=10&category=${category}&difficulty=${difficulty}&type=multiple`,
+        );
+        const data = await res.json();
+
+        if (data.response_code === 0 && data.results.length > 0) {
+          setQuestions(data.results);
+          setTimeLeft(
+            difficulty === "hard" ? 15 : difficulty === "medium" ? 20 : 25,
+          );
+        } else {
+          alert("No hay suficientes preguntas");
+          navigate("/selection");
+        }
+      } catch (err) {
+        alert("Error de conexión");
+        navigate("/selection");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchQuestions();
+  }, [category, difficulty, navigate]);
   useEffect(() => {
     const fetchQuestions = async () => {
       if (hasFetched.current) return;
@@ -53,32 +87,28 @@ const Game = () => {
     fetchQuestions();
   }, [category, difficulty, navigate]);
 
-  // ==================== TIMER ROBUSTO ====================
   useEffect(() => {
-    // Limpiar timer anterior
     if (timerRef.current) {
       clearInterval(timerRef.current);
     }
 
-    // Solo iniciar timer si hay pregunta y aún no se respondió
     if (questions.length === 0 || selectedAnswer !== null) return;
 
     timerRef.current = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
           clearInterval(timerRef.current);
-          handleNextQuestion(); // tiempo agotado
+          handleNextQuestion();
           return 0;
         }
         return prev - 1;
       });
     }, 1000);
 
-    // Cleanup
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [currentQuestion, selectedAnswer, questions.length]); // solo depende de estos
+  }, [currentQuestion, selectedAnswer, questions.length]);
 
   const currentQ = questions[currentQuestion];
   const allAnswers = useMemo(() => {
@@ -90,20 +120,29 @@ const Game = () => {
 
   const handleAnswer = (answer) => {
     setSelectedAnswer(answer);
-    const isCorrect = answer === currentQ.correct_answer;
-    if (isCorrect) setScore(score + 1);
+    const correct = answer === currentQ.correct_answer;
+    setIsCorrect(correct);
 
-    // Limpiar timer al responder
+    if (correct) {
+      setScore(score + 1);
+      setShowConfetti(true);
+      setTimeout(() => setShowConfetti(false), 2800);
+    }
+
+    setShowFeedback(true);
+
     if (timerRef.current) clearInterval(timerRef.current);
 
-    setTimeout(() => handleNextQuestion(), 1500);
+    setTimeout(() => {
+      handleNextQuestion();
+      setShowFeedback(false);
+    }, 1800);
   };
 
   const handleNextQuestion = () => {
     if (currentQuestion + 1 < questions.length) {
       setCurrentQuestion(currentQuestion + 1);
       setSelectedAnswer(null);
-      // Nuevo tiempo según dificultad
       setTimeLeft(
         difficulty === "hard" ? 15 : difficulty === "medium" ? 20 : 25,
       );
@@ -115,31 +154,28 @@ const Game = () => {
   if (loading)
     return (
       <div className="text-center mt-5">
-        <h3 className="text-light">Cargando preguntas...</h3>
+        <h3 className="text-white">Cargando preguntas...</h3>
       </div>
     );
   if (!currentQ)
     return (
       <div className="text-center mt-5">
-        <h3 className="text-light">Error cargando pregunta</h3>
+        <h3 className="text-white">Error</h3>
       </div>
     );
 
   return (
     <div className="container py-5">
-      <Card className="glass-card mx-auto p-4" style={{ maxWidth: "760px" }}>
+      <Card className="p-4 mx-auto" style={{ maxWidth: "760px" }}>
         <div className="d-flex justify-content-between align-items-center mb-4">
-          <h5 className="mb-0">
+          <h5 className="mb-0 text-white">
             Pregunta <strong>{currentQuestion + 1}</strong> / {questions.length}
           </h5>
 
-          <div className="progress" style={{ width: "220px", height: "8px" }}>
-            <div
-              className="progress-bar bg-info"
-              style={{
-                width: `${((currentQuestion + 1) / questions.length) * 100}%`,
-              }}
-            ></div>
+          <div className="text-end">
+            <div className="badge bg-primary fs-5 px-3 py-2">
+              Puntuación: <strong>{score}</strong>
+            </div>
           </div>
 
           <Timer timeLeft={timeLeft} />
@@ -153,12 +189,16 @@ const Game = () => {
           respuestaCorrecta={currentQ.correct_answer}
         />
 
-        <div className="text-center mt-4">
-          <small className="text-white fw-bold">
-            Puntuación: <strong className="fs-4">{score}</strong>
-          </small>
-        </div>
+        {showFeedback && (
+          <div
+            className={`text-center mt-3 fs-4 fw-bold ${isCorrect ? "text-success" : "text-primary"}`}
+          >
+            {isCorrect ? "¡Correcto! 🎉" : "¡Incorrecto!"}
+          </div>
+        )}
       </Card>
+
+      <Confetti active={showConfetti} />
     </div>
   );
 };

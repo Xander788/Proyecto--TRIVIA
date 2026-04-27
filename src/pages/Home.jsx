@@ -6,19 +6,35 @@ const Home = () => {
   const navigate = useNavigate()
 
   return (
-    <div className="text-center mt-5">
-      <Card className="mx-auto p-5" style={{ maxWidth: '600px' }}>
-        <h1 className="display-4 mb-4">Trivia en Español</h1>
-        <p className="lead mb-4">Pon a prueba tus conocimientos</p>
-        
-        <Button 
-          variant="success" 
-          size="lg"
-          onClick={() => navigate('/selection')}
-        >
-          ¡JUGAR AHORA!
-        </Button>
-      </Card>
+    <div className="container py-5">
+      <div className="row justify-content-center">
+        <div className="col-lg-7 col-md-9">
+          <Card className="p-5 text-center">
+            <h1 className="display-3 fw-bold neon-text mb-3 text-white">
+              🧠 Trivia en Español
+            </h1>
+            
+            <p className="lead fs-4 text-white mb-5">
+              Pon a prueba tus conocimientos con preguntas reales
+            </p>
+
+            <div className="mb-4">
+              <Button 
+                variant="success" 
+                size="lg" 
+                className="px-5 py-3 fs-4 fw-bold btn-neon"
+                onClick={() => navigate('/selection')}
+              >
+                ¡JUGAR AHORA!
+              </Button>
+            </div>
+
+            <p className="text-white fs-5 fw-bold">
+              10 preguntas • Diferentes categorías • Versus
+            </p>
+          </Card>
+        </div>
+      </div>
     </div>
   )
 }
