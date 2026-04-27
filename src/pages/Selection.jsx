@@ -27,11 +27,11 @@ const Selection = () => {
   ]
 
   return (
-    <div className="container py-5">
+    <div className="container py-2">
       <div className="row justify-content-center">
         <div className="col-lg-6 col-md-8">
-          <Card className="p-5">
-            <h2 className="text-center mb-5 text-white">⚙️ Configura tu partida</h2>
+          <Card className="p-3">
+            <h2 className="text-center mb-3 text-white">⚙️ Configura tu partida</h2>
 
             <CustomSelect
               label="Categoría"
@@ -40,7 +40,7 @@ const Selection = () => {
               options={categories}
             />
 
-            <div className="mb-4">
+            <div className="mb-2">
               <label className="form-label fw-bold text-white">Dificultad</label>
               <div className="btn-group w-100">
                 {[
@@ -60,7 +60,7 @@ const Selection = () => {
               </div>
             </div>
 
-            <div className="mb-5">
+            <div className="mb-3">
               <label className="form-label fw-bold text-white">Modo de juego</label>
               <div className="btn-group w-100">
                 <Button
