@@ -3,70 +3,119 @@ import Button from '../Components/Button';
 
 const UserProfile = ({ user, onLogout }) => {
   const [showMenu, setShowMenu] = useState(false);
-  const [imgError, setImgError] = useState(false);
 
   const handleLogout = () => {
     onLogout();
     setShowMenu(false);
   };
 
-  // Imagen principal (la que subiste o la de la carpeta local)
-  const mainImage = user.picture || user.image;
+  // === ESTADÍSTICAS ===
+  const triviaCorrect = user.correctTrivia || 0;
+  const triviaIncorrect = user.incorrectTrivia || 0;
+  const pokemonCorrect = user.correctPokemon || 0;
+  const pokemonIncorrect = user.incorrectPokemon || 0;
 
-  // Imagen por defecto de internet (cuando falla la principal)
-  const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.username)}&background=6366f1&color=fff&size=128&bold=true`;
+  const triviaTotal = triviaCorrect + triviaIncorrect;
+  const pokemonTotal = pokemonCorrect + pokemonIncorrect;
 
-  const handleImageError = () => {
-    setImgError(true);
+  const triviaPercent = triviaTotal > 0 ? Math.round((triviaCorrect / triviaTotal) * 100) : 0;
+  const pokemonPercent = pokemonTotal > 0 ? Math.round((pokemonCorrect / pokemonTotal) * 100) : 0;
+
+  const getColor = (correct, incorrect) => (correct > incorrect ? '#00bc8c' : '#e74c3c');
+
+  // === IMAGEN POR DEFECTO SEGURA ===
+  const getProfileImage = () => {
+    if (user.picture) return user.picture;
+    if (user.image) return user.image;
+    
+    // Imagen por defecto bonita y confiable
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(user.username)}&background=6366f1&color=fff&size=128&bold=true`;
   };
 
   return (
     <div className="d-flex align-items-center gap-3 position-relative">
-      <div 
+      <div
         className="d-flex align-items-center gap-2 cursor-pointer"
         onClick={() => setShowMenu(!showMenu)}
       >
-        {/* Imagen de perfil con fallback */}
-        <img 
-          src={imgError ? defaultAvatar : mainImage} 
+        {/* Foto de perfil con fallback seguro */}
+        <img
+          src={getProfileImage()}
           alt={user.username}
           className="rounded-circle border border-light"
-          style={{ 
-            width: '40px', 
-            height: '40px', 
-            objectFit: 'cover' 
+          style={{ width: '38px', height: '38px', objectFit: 'cover' }}
+          onError={(e) => {
+            // Si falla la imagen, usar ui-avatars como último recurso
+            e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.username)}&background=6366f1&color=fff&size=128`;
           }}
-          onError={handleImageError}
         />
 
         <div>
           <span className="text-white fw-medium">{user.username}</span>
-          {user.provider === 'facebook' && (
-            <small className="text-info d-block" style={{ fontSize: '0.75rem' }}>
-              📘 Facebook
-            </small>
-          )}
+        </div>
+
+        {/* === DOS CÍRCULOS DE ESTADÍSTICAS === */}
+        <div className="d-flex gap-2 ms-2">
+          {/* Trivia */}
+          <div style={{ position: 'relative', width: '34px', height: '34px' }} title={`Trivia: ${triviaCorrect}/${triviaTotal} (${triviaPercent}%)`}>
+            <svg width="34" height="34" style={{ transform: 'rotate(-90deg)' }}>
+              <circle cx="17" cy="17" r="14" fill="none" stroke="#2c3e50" strokeWidth="5" />
+              <circle
+                cx="17"
+                cy="17"
+                r="14"
+                fill="none"
+                stroke={getColor(triviaCorrect, triviaIncorrect)}
+                strokeWidth="5"
+                strokeDasharray={`${(triviaPercent / 100) * 88} 88`}
+              />
+            </svg>
+            <div style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              fontSize: '9px',
+              fontWeight: 'bold',
+              color: getColor(triviaCorrect, triviaIncorrect)
+            }}>
+              {triviaPercent}%
+            </div>
+          </div>
+
+          {/* Pokémon */}
+          <div style={{ position: 'relative', width: '34px', height: '34px' }} title={`Pokémon: ${pokemonCorrect}/${pokemonTotal} (${pokemonPercent}%)`}>
+            <svg width="34" height="34" style={{ transform: 'rotate(-90deg)' }}>
+              <circle cx="17" cy="17" r="14" fill="none" stroke="#2c3e50" strokeWidth="5" />
+              <circle
+                cx="17"
+                cy="17"
+                r="14"
+                fill="none"
+                stroke={getColor(pokemonCorrect, pokemonIncorrect)}
+                strokeWidth="5"
+                strokeDasharray={`${(pokemonPercent / 100) * 88} 88`}
+              />
+            </svg>
+            <div style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              fontSize: '9px',
+              fontWeight: 'bold',
+              color: getColor(pokemonCorrect, pokemonIncorrect)
+            }}>
+              {pokemonPercent}%
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Menú desplegable */}
+      {/* Menú de cerrar sesión */}
       {showMenu && (
-        <div 
-          className="position-absolute top-100 end-0 bg-dark border border-secondary rounded shadow-lg mt-2 py-1"
-          style={{ minWidth: '180px', zIndex: 1050 }}
-          onClick={(e) => e.stopPropagation()}
-        >
-          <div className="px-3 py-2 border-bottom border-secondary">
-            <small className="text-muted">Conectado como</small>
-            <div className="fw-bold text-white">{user.username}</div>
-            <small className="text-muted">{user.email}</small>
-          </div>
-
-          <Button
-            variant="outline-danger"
-            className="w-100 rounded-0 border-0"
-            onClick={handleLogout}
-          >
+        <div className="position-absolute top-100 end-0 bg-dark border border-secondary rounded shadow mt-2 py-1" style={{ minWidth: '160px', zIndex: 1050 }}>
+          <Button variant="outline-danger" className="w-100 rounded-0 border-0" onClick={handleLogout}>
             Cerrar Sesión
           </Button>
         </div>
