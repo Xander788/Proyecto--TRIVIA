@@ -126,3 +126,35 @@ export const verifyLogin = (identifier, password) => {
     u.password === password
   );
 };
+
+// Actualizar estadísticas del usuario por modo de juego (Trivia o Pokémon)
+export const updateUserStats = (mode, correct, incorrect) => {
+  try {
+    const currentUser = getCurrentUser();
+    if (!currentUser) return false;
+
+    if (mode === 'trivia') {
+      currentUser.correctTrivia = (currentUser.correctTrivia || 0) + correct;
+      currentUser.incorrectTrivia = (currentUser.incorrectTrivia || 0) + incorrect;
+    } else if (mode === 'pokemon') {
+      currentUser.correctPokemon = (currentUser.correctPokemon || 0) + correct;
+      currentUser.incorrectPokemon = (currentUser.incorrectPokemon || 0) + incorrect;
+    }
+
+    // Guardar en currentUser
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+    // Actualizar también en la lista de usuarios guardados
+    const savedUsers = JSON.parse(localStorage.getItem('triviaUsers') || '[]');
+    const index = savedUsers.findIndex(u => u.email === currentUser.email);
+    if (index !== -1) {
+      savedUsers[index] = currentUser;
+      localStorage.setItem('triviaUsers', JSON.stringify(savedUsers));
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Error actualizando estadísticas:", error);
+    return false;
+  }
+};
