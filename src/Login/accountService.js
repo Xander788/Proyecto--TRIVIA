@@ -1,9 +1,8 @@
-// src/services/accountService.js
 import jorge from '../Login/Avatars/Jorge.jpg';
 import alexander from '../Login/Avatars/Alexander.jpg';
 import andres from '../Login/Avatars/Andres.jpg';
 import juanpablo from '../Login/Avatars/JuanPablo.jpg';
-import victor from '../Login/Avatars/Victor.jpg';
+import victor from '../Login/Avatars/victor.jpg';
 
 const PREDEFINED_USERS = [
   {
