@@ -136,7 +136,6 @@ const AuthModal = ({ isOpen, onClose, onLoginSuccess }) => {
               </div>
             )}
 
-            {/* === CREAR CUENTA === */}
             {mode === 'register' && (
               <form onSubmit={handleRegister}>
                 <div className="mb-3">
@@ -206,7 +205,6 @@ const AuthModal = ({ isOpen, onClose, onLoginSuccess }) => {
               </form>
             )}
 
-            {/* === YA TENGO CUENTA === */}
             {mode === 'login' && (
               <form onSubmit={handleManualLogin}>
                 <div className="mb-3">
@@ -237,7 +235,6 @@ const AuthModal = ({ isOpen, onClose, onLoginSuccess }) => {
               </form>
             )}
 
-            {/* === INICIAR CON FACEBOOK === */}
             {mode === 'facebook' && (
               <div>
                 <p className="mb-3">Busca tu usuario de Facebook:</p>

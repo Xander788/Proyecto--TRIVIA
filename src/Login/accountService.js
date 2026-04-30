@@ -58,11 +58,9 @@ const PREDEFINED_USERS = [
   }
 ];
 
-// Obtener todos los usuarios (predefinidos + creados por el usuario)
 export const getAllUsers = () => {
   try {
     const saved = JSON.parse(localStorage.getItem('triviaUsers') || '[]');
-    // Evitar duplicados con los predefinidos
     const allUsers = [...PREDEFINED_USERS];
     
     saved.forEach(savedUser => {
@@ -77,12 +75,9 @@ export const getAllUsers = () => {
   }
 };
 
-// Guardar nuevo usuario (cuentas locales)
 export const saveUser = (userData) => {
   try {
     const allUsers = getAllUsers();
-    
-    // Verificar duplicados
     if (allUsers.some(u => 
       u.username.toLowerCase() === userData.username.toLowerCase() || 
       u.email.toLowerCase() === userData.email.toLowerCase()
@@ -93,7 +88,6 @@ export const saveUser = (userData) => {
     const usersToSave = [...JSON.parse(localStorage.getItem('triviaUsers') || '[]'), userData];
     localStorage.setItem('triviaUsers', JSON.stringify(usersToSave));
     
-    // Establecer como usuario actual
     localStorage.setItem('currentUser', JSON.stringify(userData));
     return true;
   } catch (error) {
@@ -102,7 +96,6 @@ export const saveUser = (userData) => {
   }
 };
 
-// Obtener usuario actual
 export const getCurrentUser = () => {
   try {
     const user = localStorage.getItem('currentUser');
@@ -112,12 +105,10 @@ export const getCurrentUser = () => {
   }
 };
 
-// Cerrar sesión
 export const logoutUser = () => {
   localStorage.removeItem('currentUser');
 };
 
-// Verificar login (usuario o email + contraseña)
 export const verifyLogin = (identifier, password) => {
   const users = getAllUsers();
   return users.find(u => 
@@ -127,7 +118,6 @@ export const verifyLogin = (identifier, password) => {
   );
 };
 
-// Actualizar estadísticas del usuario por modo de juego (Trivia o Pokémon)
 export const updateUserStats = (mode, correct, incorrect) => {
   try {
     const currentUser = getCurrentUser();
@@ -141,10 +131,8 @@ export const updateUserStats = (mode, correct, incorrect) => {
       currentUser.incorrectPokemon = (currentUser.incorrectPokemon || 0) + incorrect;
     }
 
-    // Guardar en currentUser
     localStorage.setItem('currentUser', JSON.stringify(currentUser));
 
-    // Actualizar también en la lista de usuarios guardados
     const savedUsers = JSON.parse(localStorage.getItem('triviaUsers') || '[]');
     const index = savedUsers.findIndex(u => u.email === currentUser.email);
     if (index !== -1) {

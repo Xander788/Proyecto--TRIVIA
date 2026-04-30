@@ -10,7 +10,6 @@ const Navbar = () => {
   const [user, setUser] = useState(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
 
-  // Cargar usuario actual al montar el componente
   useEffect(() => {
     const currentUser = getCurrentUser();
     if (currentUser) {
@@ -26,14 +25,13 @@ const Navbar = () => {
   const handleLogout = () => {
     logoutUser();
     setUser(null);
-    navigate('/'); // opcional: volver al home
+    navigate('/');
   };
 
   return (
     <>
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow sticky-top">
         <div className="container">
-          {/* Logo / Marca */}
           <a 
             className="navbar-brand fw-bold fs-4 d-flex align-items-center gap-2 neon-text" 
             href="#"
@@ -64,7 +62,6 @@ const Navbar = () => {
                 </a>
               </li>
 
-              {/* ==================== BOTÓN DE LOGIN / PERFIL ==================== */}
               <li className="nav-item ms-3">
                 {user ? (
                   <UserProfile user={user} onLogout={handleLogout} />
@@ -83,7 +80,7 @@ const Navbar = () => {
         </div>
       </nav>
 
-      {/* Modal de Autenticación */}
+
       <AuthModal 
         isOpen={showLoginModal} 
         onClose={() => setShowLoginModal(false)} 

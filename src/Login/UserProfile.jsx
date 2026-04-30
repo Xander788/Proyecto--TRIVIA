@@ -9,7 +9,6 @@ const UserProfile = ({ user, onLogout }) => {
     setShowMenu(false);
   };
 
-  // === ESTADÍSTICAS ===
   const triviaCorrect = user.correctTrivia || 0;
   const triviaIncorrect = user.incorrectTrivia || 0;
   const pokemonCorrect = user.correctPokemon || 0;
@@ -22,13 +21,10 @@ const UserProfile = ({ user, onLogout }) => {
   const pokemonPercent = pokemonTotal > 0 ? Math.round((pokemonCorrect / pokemonTotal) * 100) : 0;
 
   const getColor = (correct, incorrect) => (correct > incorrect ? '#00bc8c' : '#e74c3c');
-
-  // === IMAGEN POR DEFECTO SEGURA ===
   const getProfileImage = () => {
     if (user.picture) return user.picture;
     if (user.image) return user.image;
     
-    // Imagen por defecto bonita y confiable
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(user.username)}&background=6366f1&color=fff&size=128&bold=true`;
   };
 
