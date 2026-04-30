@@ -184,15 +184,15 @@ const GamePokemon = () => {
 
       <Card className="p-3 p-md-3">
         {pokemonData && pokemonOptions.length > 0 ? (
-          <div>
+          <section>
             <h4 className="text-center mb-2 text-white">¿Quién es este Pokémon?</h4>
-            <div className="text-center mb-2">
+            <section className="text-center mb-2">
               <img 
                 src={pokemonData.sprite} 
                 alt="Pokémon" 
                 className="pokemon-sprite" 
               />
-            </div>
+            </section>
             <div className="d-grid gap-2">
               {pokemonOptions.map((option, i) => (
                 <Button
@@ -214,16 +214,16 @@ const GamePokemon = () => {
                 </Button>
               ))}
             </div>
-          </div>
+          </section>
         ) : (
-          <div className="text-center py-5">
+          <section className="text-center py-5">
             <div className="spinner-border text-success mb-3" role="status" />
             <p className="text-white fs-5">Cargando siguiente Pokémon...</p>
-          </div>
+          </section>
         )}
 
         {showFeedback && (
-          <div className="mt-2 text-center">
+          <section className="mt-2 text-center">
             {isCorrect ? (
               <p className="text-success fw-bold fs-5">🎉 ¡Correcto!</p>
             ) : (
@@ -231,7 +231,7 @@ const GamePokemon = () => {
                 ❌ Incorrecto — era: <strong>{pokemonData?.name}</strong>
               </p>
             )}
-          </div>
+          </section>
         )}
       </Card>
     </div>

@@ -8,7 +8,7 @@ const Pregunta = ({
   respuestaCorrecta 
 }) => {
   return (
-    <div>
+    <section>
       <h4 
         className="mb-2 text-center neon-text text-white fw-bold fs-3"
         dangerouslySetInnerHTML={{ __html: pregunta }} 
@@ -44,7 +44,7 @@ const Pregunta = ({
           );
         })}
       </div>
-    </div>
+    </section>
   );
 };
 

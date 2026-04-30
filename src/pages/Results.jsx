@@ -45,7 +45,7 @@ const Results = () => {
             <h1 className="justify-content-center fw-bold text-white">¡Fin del Juego!</h1>
 
             <div className="d-flex justify-content-center mb-5">
-              <div className="results-chart">
+              <article className="results-chart">
                 <svg className="results-chart-svg">
                   <circle cx="120" cy="120" r="105" fill="none" stroke="#2c3e50" strokeWidth="22" />
                   <circle 
@@ -61,7 +61,7 @@ const Results = () => {
                   />
                 </svg>
 
-                <div className="results-chart-text">
+                <article className="results-chart-text">
                   <div className="results-score-correct">
                     {score}
                   </div>
@@ -71,8 +71,8 @@ const Results = () => {
                   <div>
                     Aciertos / Errores
                   </div>
-                </div>
-              </div>
+                </article>
+              </article>
             </div>
 
             <div className="d-flex justify-content-center gap-3 mb-3">

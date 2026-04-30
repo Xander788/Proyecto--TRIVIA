@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Card from '../Components/Card'
 import Button from '../Components/Button'
-import CustomSelect from '../Components/Select' 
+import CustomSelect from '../Components/Select'
 
 const Selection = () => {
   const [category, setCategory] = useState('general_knowledge')
@@ -20,10 +20,10 @@ const Selection = () => {
 
   const categories = [
     { value: 'general_knowledge', label: 'Conocimiento General' },
-    { value: 'film_and_tv',       label: 'Películas y TV' },
-    { value: 'science',           label: 'Ciencia y Naturaleza' },
-    { value: 'geography',         label: 'Geografía' },
-    { value: 'history',           label: 'Historia' },
+    { value: 'film_and_tv', label: 'Películas y TV' },
+    { value: 'science', label: 'Ciencia y Naturaleza' },
+    { value: 'geography', label: 'Geografía' },
+    { value: 'history', label: 'Historia' },
   ]
 
   return (
@@ -40,13 +40,13 @@ const Selection = () => {
               options={categories}
             />
 
-            <div className="mb-2">
+            <section className="mb-2">
               <label className="form-label fw-bold text-white">Dificultad</label>
               <div className="btn-group w-100">
                 {[
-                  { value: 'easy',   label: '🟢 Fácil',  variant: 'success' },
-                  { value: 'medium', label: '🟡 Medio',  variant: 'warning' },
-                  { value: 'hard',   label: '🔴 Difícil', variant: 'primary' }
+                  { value: 'easy', label: '🟢 Fácil', variant: 'success' },
+                  { value: 'medium', label: '🟡 Medio', variant: 'warning' },
+                  { value: 'hard', label: '🔴 Difícil', variant: 'primary' }
                 ].map(({ value, label, variant }) => (
                   <Button
                     key={value}
@@ -58,9 +58,9 @@ const Selection = () => {
                   </Button>
                 ))}
               </div>
-            </div>
+            </section>
 
-            <div className="mb-3">
+            <section className="mb-3">
               <label className="form-label fw-bold text-white">Modo de juego</label>
               <div className="btn-group w-100">
                 <Button
@@ -78,7 +78,7 @@ const Selection = () => {
                   🎮 ¿Quién es ese Pokémon?
                 </Button>
               </div>
-            </div>
+            </section>
 
             <Button
               variant="success"

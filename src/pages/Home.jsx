@@ -18,7 +18,7 @@ const Home = () => {
               Pon a prueba tus conocimientos con preguntas reales
             </p>
 
-            <div className="mb-4">
+            <section className="mb-4">
               <Button 
                 variant="success" 
                 size="lg" 
@@ -27,7 +27,7 @@ const Home = () => {
               >
                 ¡JUGAR AHORA!
               </Button>
-            </div>
+            </section>
 
             <p className="text-white fs-5 fw-bold">
               • 10 preguntas • Poketrivia • Diferentes categorías

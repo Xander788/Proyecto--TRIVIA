@@ -32,7 +32,7 @@ const traducirLote = async (textos) => {
   const textoUnido = textos.join(' ||| ');
 
   try {
-    const respuesta = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(textoUnido)}&langpair=en|es`);
+    const respuesta = await fetch();
     if (!respuesta.ok) throw new Error('Error en traducción');
 
     const datos = await respuesta.json();
@@ -215,7 +215,7 @@ const GameTrivia = () => {
         />
 
         {respuestaElegida && (
-          <div className="mt-4 text-center">
+          <section className="mt-4 text-center">
             {respuestaElegida === preguntaActual.correcta ? (
               <p className="text-success fw-bold fs-4">🎉 ¡Correcto!</p>
             ) : respuestaElegida === '__tiempo_agotado__' ? (
@@ -238,7 +238,7 @@ const GameTrivia = () => {
             >
               {indice >= preguntas.length - 1 ? '🏁 Ver Resultados' : 'Siguiente →'}
             </Button>
-          </div>
+          </section>
         )}
       </Card>
     </div>

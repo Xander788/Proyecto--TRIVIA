@@ -10,12 +10,12 @@ const CustomSelect = ({ value, onChange, options, label = "Categoría" }) => {
   };
 
   return (
-    <div className="mb-4">
+    <section className="mb-4">
       <label className="form-label fw-bold mb-2">
         {label}
       </label>
 
-      <div className="custom-select-container">
+      <section className="custom-select-container">
 
         <button
           type="button"
@@ -42,8 +42,8 @@ const CustomSelect = ({ value, onChange, options, label = "Categoría" }) => {
             ))}
           </div>
         )}
-      </div>
-    </div>
+      </section>
+    </section>
   );
 };
 

@@ -183,13 +183,13 @@ const AuthModal = ({ isOpen, onClose, onLoginSuccess }) => {
                     onChange={handleImageChange}
                   />
                   {formData.imagePreview && (
-                    <div className="mt-3 text-center">
+                    <article className="mt-3 text-center">
                       <img 
                         src={formData.imagePreview} 
                         alt="Preview" 
                         className="rounded-circle border profile-img-lg" 
                       />
-                    </div>
+                    </article>
                   )}
                 </div>
 
@@ -235,7 +235,7 @@ const AuthModal = ({ isOpen, onClose, onLoginSuccess }) => {
             )}
 
             {mode === 'facebook' && (
-              <div>
+              <section>
                 <p className="mb-3">Busca tu usuario de Facebook:</p>
                 <input 
                   type="text" 
@@ -249,7 +249,7 @@ const AuthModal = ({ isOpen, onClose, onLoginSuccess }) => {
                 </Button>
 
                 {selectedFbUser && (
-                  <div className="text-center p-3 border rounded">
+                  <article className="text-center p-3 border rounded">
                     <img 
                       src={selectedFbUser.picture} 
                       alt={selectedFbUser.username}
@@ -259,7 +259,7 @@ const AuthModal = ({ isOpen, onClose, onLoginSuccess }) => {
                     <Button variant="success" className="w-100" onClick={confirmFacebookLogin}>
                       Iniciar Sesión
                     </Button>
-                  </div>
+                  </article>
                 )}
 
                 {error && <p className="text-danger mt-3">{error}</p>}
@@ -271,7 +271,7 @@ const AuthModal = ({ isOpen, onClose, onLoginSuccess }) => {
                 }}>
                   Volver
                 </Button>
-              </div>
+              </section>
             )}
           </div>
         </div>
