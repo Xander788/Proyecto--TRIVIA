@@ -187,8 +187,7 @@ const AuthModal = ({ isOpen, onClose, onLoginSuccess }) => {
                       <img 
                         src={formData.imagePreview} 
                         alt="Preview" 
-                        className="rounded-circle border" 
-                        style={{ width: '100px', height: '100px', objectFit: 'cover' }} 
+                        className="rounded-circle border profile-img-lg" 
                       />
                     </div>
                   )}
@@ -254,8 +253,7 @@ const AuthModal = ({ isOpen, onClose, onLoginSuccess }) => {
                     <img 
                       src={selectedFbUser.picture} 
                       alt={selectedFbUser.username}
-                      className="rounded-circle mb-2"
-                      style={{ width: '80px', height: '80px', objectFit: 'cover' }}
+                      className="rounded-circle mb-2 profile-img-md"
                     />
                     <p className="mb-1 fw-bold">{selectedFbUser.username}</p>
                     <Button variant="success" className="w-100" onClick={confirmFacebookLogin}>

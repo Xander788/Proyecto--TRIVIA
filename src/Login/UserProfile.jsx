@@ -38,8 +38,7 @@ const UserProfile = ({ user, onLogout }) => {
         <img
           src={getProfileImage()}
           alt={user.username}
-          className="rounded-circle border border-light"
-          style={{ width: '38px', height: '38px', objectFit: 'cover' }}
+          className="rounded-circle border border-light profile-img-sm"
           onError={(e) => {
             e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.username)}&background=6366f1&color=fff&size=128`;
           }}
@@ -50,8 +49,8 @@ const UserProfile = ({ user, onLogout }) => {
         </div>
 
         <div className="d-flex gap-2 ms-2">
-          <div style={{ position: 'relative', width: '34px', height: '34px' }} title={`Trivia: ${triviaCorrect}/${triviaTotal} (${triviaPercent}%)`}>
-            <svg width="34" height="34" style={{ transform: 'rotate(-90deg)' }}>
+          <div className="profile-progress" title={`Trivia: ${triviaCorrect}/${triviaTotal} (${triviaPercent}%)`}>
+            <svg className="profile-progress-svg">
               <circle cx="17" cy="17" r="14" fill="none" stroke="#2c3e50" strokeWidth="5" />
               <circle
                 cx="17"
@@ -63,23 +62,14 @@ const UserProfile = ({ user, onLogout }) => {
                 strokeDasharray={`${(triviaPercent / 100) * 88} 88`}
               />
             </svg>
-            <div style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              fontSize: '9px',
-              fontWeight: 'bold',
-              color: getColor(triviaCorrect, triviaIncorrect)
-            }}>
+            <div className="profile-progress-label" style={{ color: getColor(triviaCorrect, triviaIncorrect) }}>
               {triviaPercent}%
-              
             </div>
             <strong>Trivia</strong>
           </div>
 
-          <div style={{ position: 'relative', width: '34px', height: '34px' }} title={`Pokémon: ${pokemonCorrect}/${pokemonTotal} (${pokemonPercent}%)`}>
-            <svg width="34" height="34" style={{ transform: 'rotate(-90deg)' }}>
+          <div className="profile-progress" title={`Pokémon: ${pokemonCorrect}/${pokemonTotal} (${pokemonPercent}%)`}>
+            <svg className="profile-progress-svg">
               <circle cx="17" cy="17" r="14" fill="none" stroke="#2c3e50" strokeWidth="5" />
               <circle
                 cx="17"
@@ -91,15 +81,7 @@ const UserProfile = ({ user, onLogout }) => {
                 strokeDasharray={`${(pokemonPercent / 100) * 88} 88`}
               />
             </svg>
-            <div style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              fontSize: '9px',
-              fontWeight: 'bold',
-              color: getColor(pokemonCorrect, pokemonIncorrect)
-            }}>
+            <div className="profile-progress-label" style={{ color: getColor(pokemonCorrect, pokemonIncorrect) }}>
               {pokemonPercent}%
             </div>
             <strong>Pokemon</strong>

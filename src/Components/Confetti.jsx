@@ -1,15 +1,29 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const Confetti = ({ active, duration = 2500 }) => {
   const canvasRef = useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  // Mostrar el canvas solo cuando está activo
+  useEffect(() => {
+    if (active) {
+      setIsVisible(true);
+    }
+  }, [active]);
 
   useEffect(() => {
-    if (!active || !canvasRef.current) return;
+    if (!isVisible || !canvasRef.current) return;
 
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    
+    // Ajustar tamaño del canvas
+    const resizeCanvas = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
 
     const colors = ['#00bc8c', '#c084fc', '#f1c40f', '#e74c3c', '#3498db'];
     const confettiPieces = [];
@@ -43,13 +57,24 @@ const Confetti = ({ active, duration = 2500 }) => {
     }
 
     let animationFrame;
+    let isCancelled = false;
+
     const animate = () => {
+      if (isCancelled) return;
+      
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      confettiPieces.forEach((piece, i) => {
+      
+      // Filtrar piezas que ya salieron de la pantalla
+      const activePieces = confettiPieces.filter(piece => piece.y <= canvas.height);
+      
+      activePieces.forEach((piece) => {
         piece.update();
         piece.draw();
-        if (piece.y > canvas.height) confettiPieces.splice(i, 1);
       });
+
+      // Actualizar el array solo con piezas activas
+      confettiPieces.length = 0;
+      confettiPieces.push(...activePieces);
 
       if (confettiPieces.length > 0) {
         animationFrame = requestAnimationFrame(animate);
@@ -61,17 +86,30 @@ const Confetti = ({ active, duration = 2500 }) => {
     animate();
 
     const timeout = setTimeout(() => {
+      isCancelled = true;
       cancelAnimationFrame(animationFrame);
-      if (canvas) ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      setIsVisible(false);
     }, duration);
 
     return () => {
+      isCancelled = true;
       clearTimeout(timeout);
       cancelAnimationFrame(animationFrame);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      window.removeEventListener('resize', resizeCanvas);
     };
-  }, [active]);
+  }, [isVisible, duration]);
 
-  return <canvas ref={canvasRef} style={{ position: 'fixed', top: 0, left: 0, pointerEvents: 'none', zIndex: 9999 }} />;
+  // No renderizar nada si no está activo
+  if (!isVisible) return null;
+
+  return (
+    <canvas 
+      ref={canvasRef} 
+      className="confetti-canvas"
+    />
+  );
 };
 
 export default Confetti;

@@ -183,7 +183,7 @@ const GameTrivia = () => {
         </span>
       </div>
 
-      <div className="progress mb-2" style={{ height: '8px' }}>
+      <div className="progress mb-2 game-progress">
         <div
           className="progress-bar bg-success"
           style={{ width: `${((indice + 1) / preguntas.length) * 100}%` }}

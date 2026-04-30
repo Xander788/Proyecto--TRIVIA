@@ -175,7 +175,7 @@ const GamePokemon = () => {
         </span>
       </div>
 
-      <div className="progress mb-2" style={{ height: '8px' }}>
+      <div className="progress mb-2 game-progress">
         <div
           className="progress-bar bg-success"
           style={{ width: `${(pokemonRound / 10) * 100}%` }}
@@ -190,7 +190,7 @@ const GamePokemon = () => {
               <img 
                 src={pokemonData.sprite} 
                 alt="Pokémon" 
-                style={{ maxHeight: '180px', imageRendering: 'pixelated' }} 
+                className="pokemon-sprite" 
               />
             </div>
             <div className="d-grid gap-2">

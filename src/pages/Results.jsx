@@ -45,8 +45,8 @@ const Results = () => {
             <h1 className="justify-content-center fw-bold text-white">¡Fin del Juego!</h1>
 
             <div className="d-flex justify-content-center mb-5">
-              <div style={{ position: 'relative', width: '240px', height: '240px' }}>
-                <svg width="240" height="240" style={{ transform: 'rotate(-90deg)' }}>
+              <div className="results-chart">
+                <svg className="results-chart-svg">
                   <circle cx="120" cy="120" r="105" fill="none" stroke="#2c3e50" strokeWidth="22" />
                   <circle 
                     cx="120" cy="120" r="105" fill="none" 
@@ -61,17 +61,11 @@ const Results = () => {
                   />
                 </svg>
 
-                <div style={{
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%)',
-                  textAlign: 'center'
-                }}>
-                  <div style={{ fontSize: '3.5rem', fontWeight: 'bold', color: '#00bc8c', lineHeight: '1' }}>
+                <div className="results-chart-text">
+                  <div className="results-score-correct">
                     {score}
                   </div>
-                  <div style={{ fontSize: '1.8rem', color: '#e74c3c', marginTop: '-8px' }}>
+                  <div className="results-score-incorrect">
                     {incorrect}
                   </div>
                   <div>
@@ -85,7 +79,7 @@ const Results = () => {
               <Button 
                 variant="info" 
                 size="lg" 
-                className="flex-fill py-3 fs-5 text-dark"
+                className="flex-fill py-3 fs-5 text-white"
                 onClick={() => setShowShareModal(true)}
               >
                  Compartir
@@ -94,7 +88,7 @@ const Results = () => {
               <Button 
                 variant="success" 
                 size="lg" 
-                className="flex-fill py-3 fs-5 text-dark"
+                className="flex-fill py-3 fs-5 text-white"
                 onClick={handlePlayAgain}
               >
                  Jugar de Nuevo
@@ -103,7 +97,7 @@ const Results = () => {
             <Button 
               variant="outline-light" 
               size="lg" 
-              className="py-3 fs-5 text-dark"
+              className="py-3 fs-5 text-white"
               onClick={handleGoHome}
             >
                Volver al Inicio
@@ -114,7 +108,7 @@ const Results = () => {
       </div>
 
       {showShareModal && (
-        <div className="modal show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.6)' }} onClick={() => setShowShareModal(false)}>
+        <div className="modal show d-block" onClick={() => setShowShareModal(false)}>
           <div className="modal-dialog modal-dialog-centered" onClick={e => e.stopPropagation()}>
             <div className="modal-content">
               <div className="modal-header">

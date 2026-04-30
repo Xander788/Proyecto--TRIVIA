@@ -1,3 +1,91 @@
+/* Confetti Canvas */
+.confetti-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Profile Images */
+.profile-img-lg {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+}
+.profile-img-md {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+}
+.profile-img-sm {
+  width: 38px;
+  height: 38px;
+  object-fit: cover;
+}
+
+/*circulos de progreso para el perfil */
+.profile-progress {
+  position: relative;
+  width: 34px;
+  height: 34px;
+  display: inline-block;
+}
+.profile-progress-svg {
+  width: 34px;
+  height: 34px;
+  transform: rotate(-90deg);
+}
+.profile-progress-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 9px;
+  font-weight: bold;
+}
+
+/* barra de progreso */
+.game-progress {
+  height: 8px;
+}
+
+/* Sprite  Pokemon */
+.pokemon-sprite {
+  max-height: 180px;
+  image-rendering: pixelated;
+}
+
+/* resultados  */
+.results-chart {
+  position: relative;
+  width: 240px;
+  height: 240px;
+}
+.results-chart-svg {
+  width: 240px;
+  height: 240px;
+  transform: rotate(-90deg);
+}
+.results-chart-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+.results-score-correct {
+  font-size: 3.5rem;
+  font-weight: bold;
+  color: #00bc8c;
+  line-height: 1;
+}
+.results-score-incorrect {
+  font-size: 1.8rem;
+  color: #e74c3c;
+  margin-top: -8px;
+}
+
 .form-label,
 small,
 .text-light,
@@ -22,8 +110,8 @@ h1, h2, h3, h4, h5, .card-title, .card-text {
 
 .neon-text {
   text-shadow: 
-    0 0 10px #00bc8c,
-    0 0 20px #00bc8c;
+    0 0 10px #bc009d,
+    0 0 20px #7700bc;
 }
 
 .glass-card {
@@ -39,32 +127,112 @@ h1, h2, h3, h4, h5, .card-title, .card-text {
 
 .progress-bar {
   background-color: #00bc8c !important;
-.form-select {
-  background-color: rgba(255, 255, 255, 0.08) !important;
-  color: #fff !important;
-  border: 2px solid rgba(0, 188, 140, 0.5) !important;
-  border-radius: 12px !important;
-  padding: 12px 16px !important;
+}
+
+/* Component Select */
+.custom-select-container {
+  position: relative;
+}
+
+.custom-select-button {
+  width: 100%;
+  padding: 14px 20px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(0, 188, 140, 0.4);
+  border-radius: 12px;
+  color: #f0f0ff;
   font-size: 1.1rem;
-  box-shadow: 0 0 15px rgba(0, 188, 140, 0.2);
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.2s;
 }
 
-.form-select:focus {
-  border-color: #00bc8c !important;
-  box-shadow: 0 0 0 0.3rem rgba(0, 188, 140, 0.3) !important;
-  background-color: rgba(255, 255, 255, 0.12) !important;
+.custom-select-button:hover,
+.custom-select-button.active {
+  border-color: #00bc8c;
+  box-shadow: 0 0 15px rgba(0, 188, 140, 0.3);
 }
 
-.dropdown-menu,
-.form-select option {
-  background-color: #1e1e2e !important;
-  color: #fff !important;
+.custom-select-arrow {
+  opacity: 0.8;
+  transition: transform 0.2s;
 }
 
-.dropdown-menu .active,
-.form-select option:checked {
-  background-color: #00bc8c !important;
-  color: #000 !important;
+.custom-select-arrow.open {
+  transform: rotate(180deg);
+}
+
+.custom-select-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: rgba(20, 20, 35, 0.95);
+  backdrop-filter: blur(20px);
+  border: 2px solid rgba(0, 188, 140, 0.4);
+  border-radius: 12px;
+  overflow: hidden;
+  z-index: 1000;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.custom-select-option {
+  width: 100%;
+  padding: 12px 20px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  color: #f0f0ff;
+  font-size: 1rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.custom-select-option:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+.custom-select-option.selected {
+  background: rgba(0, 188, 140, 0.25);
+  color: #00bc8c;
   font-weight: bold;
 }
+
+/*Component Timer */
+.timer-badge {
+  font-size: 1.1rem;
+  padding: 8px 16px;
+  min-width: 110px;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-width: 2px;
+}
+
+.timer-number {
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+.timer-unit {
+  font-size: 0.9rem;
+  opacity: 0.75;
+}
+
+.timer-success {
+  background-color: rgba(25, 135, 84, 0.2);
+  color: #fff;
+  border-color: #198754;
+}
+
+.timer-danger {
+  background-color: rgba(220, 53, 69, 0.2);
+  color: #fff;
+  border-color: #dc3545;
 }
