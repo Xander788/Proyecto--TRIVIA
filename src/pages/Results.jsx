@@ -1,24 +1,27 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Card from '../Components/Card';
 import Button from '../Components/Button';
+import Puntaje, { guardarPartida } from '../Components/Puntaje';
 import { updateUserStats } from '../Login/accountService';   // ← IMPORTANTE
 
 const Results = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [showShareModal, setShowShareModal] = useState(false);
-
-  const { score = 0, total = 10, gameMode = 'trivia' } = location.state || {};
+  const guardadoRef = useRef(false); // Para evitar guardar varias veces
+  const { score = 0, total = 10, gameMode = 'trivia', category = 'general_knowledge', difficulty = 'easy' } = location.state || {};
   const incorrect = total - score;
   const percentage = total > 0 ? Math.round((score / total) * 100) : 0;
 
   useEffect(() => {
-    if (score !== undefined && total !== undefined) {
-      const incorrectCount = total - score;
-      updateUserStats(gameMode, score, incorrectCount);
-    }
-  }, [score, total, gameMode]);
+  if (score !== undefined && total !== undefined && !guardadoRef.current) {
+    guardadoRef.current = true
+    const incorrectCount = total - score;
+    updateUserStats(gameMode, score, incorrectCount);
+    guardarPartida({ score, total, categoria: gameMode === 'trivia' ? category : 'Pokémon', dificultad: difficulty })
+  }
+}, [score, total, gameMode]);
 
   const handlePlayAgain = () => navigate('/selection');
   const handleGoHome = () => navigate('/');
@@ -74,6 +77,8 @@ const Results = () => {
                 </div>
               </div>
             </div>
+
+            <Puntaje />
 
             <div className="d-flex justify-content-center gap-3 mb-3">
               <Button 
