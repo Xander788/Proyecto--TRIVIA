@@ -32,7 +32,7 @@ const traducirLote = async (textos) => {
   const textoUnido = textos.join(' ||| ');
 
   try {
-    const respuesta = await fetch();
+    const respuesta = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(textoUnido)}&langpair=en|es`);
     if (!respuesta.ok) throw new Error('Error en traducción');
 
     const datos = await respuesta.json();
