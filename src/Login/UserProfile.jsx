@@ -38,14 +38,13 @@ const UserProfile = ({ user, onLogout }) => {
         className="d-flex align-items-center gap-2 cursor-pointer"
         onClick={() => setShowMenu(!showMenu)}
       >
-        {/* Foto de perfil con fallback seguro */}
+
         <img
           src={getProfileImage()}
           alt={user.username}
           className="rounded-circle border border-light"
           style={{ width: '38px', height: '38px', objectFit: 'cover' }}
           onError={(e) => {
-            // Si falla la imagen, usar ui-avatars como último recurso
             e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.username)}&background=6366f1&color=fff&size=128`;
           }}
         />
@@ -54,9 +53,7 @@ const UserProfile = ({ user, onLogout }) => {
           <span className="text-white fw-medium">{user.username}</span>
         </div>
 
-        {/* === DOS CÍRCULOS DE ESTADÍSTICAS === */}
         <div className="d-flex gap-2 ms-2">
-          {/* Trivia */}
           <div style={{ position: 'relative', width: '34px', height: '34px' }} title={`Trivia: ${triviaCorrect}/${triviaTotal} (${triviaPercent}%)`}>
             <svg width="34" height="34" style={{ transform: 'rotate(-90deg)' }}>
               <circle cx="17" cy="17" r="14" fill="none" stroke="#2c3e50" strokeWidth="5" />
@@ -80,10 +77,11 @@ const UserProfile = ({ user, onLogout }) => {
               color: getColor(triviaCorrect, triviaIncorrect)
             }}>
               {triviaPercent}%
+              
             </div>
+            <strong>Trivia</strong>
           </div>
 
-          {/* Pokémon */}
           <div style={{ position: 'relative', width: '34px', height: '34px' }} title={`Pokémon: ${pokemonCorrect}/${pokemonTotal} (${pokemonPercent}%)`}>
             <svg width="34" height="34" style={{ transform: 'rotate(-90deg)' }}>
               <circle cx="17" cy="17" r="14" fill="none" stroke="#2c3e50" strokeWidth="5" />
@@ -108,11 +106,11 @@ const UserProfile = ({ user, onLogout }) => {
             }}>
               {pokemonPercent}%
             </div>
+            <strong>Pokemon</strong>
           </div>
         </div>
       </div>
 
-      {/* Menú de cerrar sesión */}
       {showMenu && (
         <div className="position-absolute top-100 end-0 bg-dark border border-secondary rounded shadow mt-2 py-1" style={{ minWidth: '160px', zIndex: 1050 }}>
           <Button variant="outline-danger" className="w-100 rounded-0 border-0" onClick={handleLogout}>
