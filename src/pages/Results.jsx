@@ -13,7 +13,6 @@ const Results = () => {
   const incorrect = total - score;
   const percentage = total > 0 ? Math.round((score / total) * 100) : 0;
 
-  // ← Este useEffect es seguro
   useEffect(() => {
     if (score !== undefined && total !== undefined) {
       const incorrectCount = total - score;
@@ -45,7 +44,6 @@ const Results = () => {
 
             <h1 className="justify-content-center fw-bold text-white">¡Fin del Juego!</h1>
 
-            {/* Donut Chart */}
             <div className="d-flex justify-content-center mb-5">
               <div style={{ position: 'relative', width: '240px', height: '240px' }}>
                 <svg width="240" height="240" style={{ transform: 'rotate(-90deg)' }}>
@@ -76,14 +74,13 @@ const Results = () => {
                   <div style={{ fontSize: '1.8rem', color: '#e74c3c', marginTop: '-8px' }}>
                     {incorrect}
                   </div>
-                  <div style={{ fontSize: '0.95rem', color: '#ffffff', marginTop: '6px' }}>
+                  <div>
                     Aciertos / Errores
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Botones */}
             <div className="d-flex justify-content-center gap-3 mb-3">
               <Button 
                 variant="info" 
@@ -116,7 +113,6 @@ const Results = () => {
         </div>
       </div>
 
-      {/* Modal Compartir */}
       {showShareModal && (
         <div className="modal show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.6)' }} onClick={() => setShowShareModal(false)}>
           <div className="modal-dialog modal-dialog-centered" onClick={e => e.stopPropagation()}>
