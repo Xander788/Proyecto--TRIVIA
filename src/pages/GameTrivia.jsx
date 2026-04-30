@@ -1,11 +1,11 @@
-import { useState, useEffect, useRef } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
-import Card from '../Components/Card'
-import Button from '../Components/Button'
-import Timer from '../Components/Timer'
-import Pregunta from '../Components/Pregunta'
-import Confetti from '../Components/Confetti'
-import { traducirPreguntaTrivia } from '../Components/Traduccion'
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+
+import Card from '../Components/Card';
+import Button from '../Components/Button';
+import Timer from '../Components/Timer';
+import Pregunta from '../Components/Pregunta';
+import Confetti from '../Components/Confetti';
 
 const mezclar = (arr) => {
   const copia = [...arr];
@@ -14,6 +14,35 @@ const mezclar = (arr) => {
     [copia[i], copia[j]] = [copia[j], copia[i]];
   }
   return copia;
+};
+
+const decodeHtml = (input) => {
+  try {
+    const txt = document.createElement('textarea');
+    txt.innerHTML = input;
+    return txt.value;
+  } catch {
+    return input || '';
+  }
+};
+
+const traducirLote = async (textos) => {
+  if (!textos || textos.length === 0) return textos;
+
+  const textoUnido = textos.join(' ||| ');
+
+  try {
+    const respuesta = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(textoUnido)}&langpair=en|es`);
+    if (!respuesta.ok) throw new Error('Error en traducción');
+
+    const datos = await respuesta.json();
+    const textoTraducido = datos.responseData?.translatedText || textoUnido;
+
+    return textoTraducido.split(' ||| ').map(t => t.trim());
+  } catch (err) {
+    console.warn('Error traduciendo lote:', err);
+    return textos;
+  }
 };
 
 const fetchDeAPI = async (category, difficulty) => {
@@ -34,11 +63,27 @@ const fetchDeAPI = async (category, difficulty) => {
   if (!data.results?.length) throw new Error('La API no devolvió preguntas');
 
   const preguntasTraducidas = await Promise.all(
-    data.map((item) => traducirPreguntaTrivia(item))
-  )
-  
-  return preguntasTraducidas
-}
+    data.results.map(async (item) => {
+      const preguntaRaw = decodeHtml(item.question);
+      const correctaRaw = decodeHtml(item.correct_answer);
+      const incorrectasRaw = item.incorrect_answers.map(decodeHtml);
+
+      const textosParaTraducir = [preguntaRaw, ...incorrectasRaw, correctaRaw];
+      const traducidos = await traducirLote(textosParaTraducir);
+
+      const preguntaTraducida = traducidos[0];
+      const correctaTraducida = traducidos[traducidos.length - 1];
+      const incorrectasTraducidas = traducidos.slice(1, -1);
+
+      const respuestas = mezclar([...incorrectasTraducidas, correctaTraducida]);
+
+      return {
+        pregunta: preguntaTraducida,
+        respuestas,
+        correcta: correctaTraducida,
+      };
+    })
+  );
 
   return preguntasTraducidas;
 };
