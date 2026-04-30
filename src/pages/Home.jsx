@@ -11,7 +11,7 @@ const Home = () => {
         <div className="col-lg-7 col-md-9">
           <Card className="p-5 text-center">
             <h1 className="display-3 fw-bold neon-text mb-3 text-white">
-              🧠 Trivia en Español
+              🧠 Trivia
             </h1>
             
             <p className="lead fs-4 text-white mb-5">
@@ -30,7 +30,7 @@ const Home = () => {
             </div>
 
             <p className="text-white fs-5 fw-bold">
-              • 10 preguntas • Poketrivia  • Versus • Diferentes categorías
+              • 10 preguntas • Poketrivia • Diferentes categorías
             </p>
           </Card>
         </div>
